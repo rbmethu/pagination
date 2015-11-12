@@ -2,69 +2,93 @@
 
 class Pagination {
     
-    var $count;		//total count of items
-    var $page;		//current page
-    var $size;		//number of items in each page
-    var $pages;		//total number of pages
-    var $list;		//list of pages to display
-	var $number;	//number of pages to show
-    var $skip= ' ... ';
+    var $itemsList;     //full items list
+    var $count;         //total number of items in the item list
+    var $pagesList;     //list of pages to display
+    var $pageItemsList; //items for current page
+    var $page;          //current page
+    var $size;          //number of items for a page
+    var $pages;         //total number of pages
+    var $pagesNumber;    //maximum number of pages to show;
+    var $skip= ' ... '; // value for page breakdown
     
-    function __construct($count, $page, $size, $number) {
-        $this->count= $count;
+    function __construct($itemsList, $page, $size, $pagesNumber) {
+        $this->itemsList= $itemsList;
         $this->page= $page;
-        $this->link= $link;
         $this->size= $size;
+        $this->pagesNumber= $pagesNumber;
+        
         $this->CalculatePages();
         $this->setPagesList();
-        $this->showPagination();
     }
     function CalculatePages (){
+        $this->count= count($this->itemsList);
         $pages= ceil($this->count/$this->size);
         $this->pages= $pages;
-        return $pages;
     }
-    public function getPages() {
-        return $this->pages;
-    }
-	public function getList(){
-		return $this->list;
-	}
     function setPagesList() {
         $list= array();
-        if ($this->pages>11) {
+        if ($this->pages>$this->pagesNumber) {
             $list= $this->setList();
         } else {
             for ($i= 1; $i<=$this->pages; $i++) {
                 $list[]= $i;
             }
         }
-        $this->list= $list;
-        return $list;
+        $this->pagesList= $list;
     }
     function setList() {
         $list= array();
-        if ($this->page<=5) {
-            for ($i=1; $i<=8; $i++){
+        $middle= ($this->pagesNumber-1)/2;
+        $upper= ceil($middle);
+        $lower= floor($middle);
+        if ($this->page<=$upper) {
+            for ($i=1; $i<=$this->pagesNumber-2; $i++){
                 $list[]= $i;
             }
             $list[]= $this->skip;
             $list[]= $this->pages;
-        } elseif (($this->page+5)>=$this->pages) {
+        } elseif (($this->page+$upper)>=$this->pages) {
             $list[]= 1;
             $list[]= $this->skip;
-            for ($i= ($this->pages-8); $i<=$this->pages; $i++){
+            for ($i=$this->pages-($this->pagesNumber-3); $i<=$this->pages; $i++){
                 $list[]= $i;
             }
         } else {
-            $list[]= 1;
-            $list[]= $this->skip;
-            for ($i=($this->page-3); $i<=($this->page+3); $i++){
-                $list[]= $i;
-            }
-            $list[]= $this->skip;
-            $list[]= $this->pages;
+            $list= $this->center($upper, $lower);
         }
         return $list;
-	}
+    }
+    function center($upper, $lower) {
+        $list= array();
+        $i= $this->page-($lower-2);
+        $list[]= 1;
+        if (($i-2)==1) {
+            $list[]= 2;
+        } else {
+            $list[]= $this->skip;
+        }
+        for ($i; $i<=$this->page+($upper-2); $i++) {
+            $list[]= $i;
+        }
+        if ($i+1==$this->pages) {
+            $list[]= $this->page-1;
+        } else {
+            $list[]= $this->skip;
+        }
+        $list[]= $this->pages;
+        return $list;
+    }
+    //return total number of pages 
+    function getPages() {
+        return $this->pages;
+    }
+    // return the pages list to be displayed
+    function getPagesList() {
+        return $this->pagesList;
+    }
+    // return list items for the gien page
+    function getPageItemsList() {
+        return $this->pageItemsList;
+    }
 }
