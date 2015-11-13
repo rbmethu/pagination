@@ -47,13 +47,15 @@ class Pagination {
         $this->size= $size;
         $this->pagesNumber= $pagesNumber;
         
+        $this->calculateCount();
+    }
+    //@todo calculate number of iems in main list
+    private function calculateCount() {
+        $this->count= count($this->itemsList);
         $this->CalculatePages();
-        $this->setPagesList();
-        $this->sliceList();
     }
     //@todo calculate pages for he list
     private function CalculatePages (){
-        $this->count= count($this->itemsList);
         $pages= ceil($this->count/$this->size);
         $this->pages= $pages;
     }
@@ -125,16 +127,23 @@ class Pagination {
     public function setSkip($skip) {
         $this->skip= $skip;
     }
+    //@todo set list size
+    public function setCount($count) {
+        $this->count= $count;
+        $this->CalculatePages();
+    }
     //@return total number of pages 
     public function getPages() {
         return $this->pages;
     }
     //@return the pages list to be displayed
     public function getPagesList() {
+        $this->setPagesList();
         return $this->pagesList;
     }
     //@return list items for the gien page
     public function getPageItemsList() {
+        $this->sliceList();
         return $this->pageItemsList;
     }
 }
