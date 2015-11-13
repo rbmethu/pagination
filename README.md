@@ -20,7 +20,7 @@ $pagination= new Pagination($itemsList, $page, $size, $pagesNumber);
  ``$page`` int is the current page to output.
  
  
- ``$size`` int numbe4r of list items per page.
+ ``$size`` int number of list items per page.
  
  
  ``$pagesNumber`` int total items to put in output pagination list.
@@ -54,3 +54,14 @@ $pagination= new Pagination($itemsList, $page, $size, $pagesNumber);
  ```php
  $itemsList= $pagination->getPageItemsList(); //null if no list was provided
  ```
+ 
+ ``getNext()`` return integer value of next page. return same value as current if current page is the last
+ ```php
+ $next= $pagination->getNext();
+ ```
+ 
+ ``getPrevious()`` return integer previous page. return same value as current page if curent page is first
+ ```php
+ $previous= $pagination->getPrevious();
+ ```
+ 
