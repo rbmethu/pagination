@@ -1,8 +1,8 @@
 # pagination
-Php code to generate pagination from a list of items
+Php code to generate pagination and pagination page items list
 
-#How to use
-Include the file pagination.php to your project
+##How to use
+Include the file pagination.php to your project.
 ```php
 include 'path_to_source/Pagination.php';
 ```
@@ -12,7 +12,7 @@ Instanciate class pagination;
 $pagination= new Pagination($itemsList, $page, $size, $pagesNumber);
 ```
 ``$itemList`` is the full list you want to genetate pages from.
- Pass an array here. if you set it to **null**, set list size by ``setCount()`` method
+ Pass an array here. if you set it to **null**, set list size by ``setCount()`` method.
  ```php
  $pagination->setCount($count); //$count int parameter is number of items in the full list.
  ```
