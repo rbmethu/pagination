@@ -58,6 +58,8 @@ class Pagination {
     private function CalculatePages (){
         $pages= ceil($this->count/$this->size);
         $this->pages= $pages;
+        $this->setPagesList();
+        $this->sliceList();
     }
     //@todo pages generating
     private function setPagesList() {
@@ -120,7 +122,7 @@ class Pagination {
     //@todo page list generation
     private function sliceList() {
         $start= ($this->page-1)*$this->size;
-        $newList = array_splice($this->itemsList, $start, 20);
+        $newList = array_splice($this->itemsList, $start, $this->size);
         $this->pageItemsList= $newList;
     }
     //@todo set skip text to custom
@@ -138,12 +140,28 @@ class Pagination {
     }
     //@return the pages list to be displayed
     public function getPagesList() {
-        $this->setPagesList();
         return $this->pagesList;
+    }
+    //@return int next page
+    public function getNext() {
+        if ($this->page==$this->pages) {
+            $next= $this->page;
+        } else {
+            $next= $this->page+ 1;
+        }
+        return $next;
+    }
+    //@return int previous page
+    public function getPrevious() {
+        if ($this->page==1) {
+            $previous= $this->page;
+        } else {
+            $previous= $this->page-1;
+        }
+        return $previous;
     }
     //@return list items for the gien page
     public function getPageItemsList() {
-        $this->sliceList();
         return $this->pageItemsList;
     }
 }
