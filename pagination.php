@@ -1,18 +1,47 @@
 <?php
+/*
+ * Copyright (C) <2015>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ * 
+ */
+
+/*
+ * A simple php oop class to generate pagination 
+ * list and page content of each page
+ */
 
 class Pagination {
     
-    var $itemsList;     //full items list
-    var $count;         //total number of items in the item list
-    var $pagesList;     //list of pages to display
-    var $pageItemsList; //items for current page
-    var $page;          //current page
-    var $size;          //number of items for a page
-    var $pages;         //total number of pages
-    var $pagesNumber;    //maximum number of pages to show;
-    var $skip= ' ... '; // value for page breakdown
+    private $itemsList;     //full items list
+    private $count;         //total number of items in the item list
+    private $pagesList;     //list of pages to display
+    private $pageItemsList; //items for current page
+    private $page;          //current page
+    private $size;          //number of items for a page
+    private $pages;         //total number of pages
+    private $pagesNumber;    //maximum number of pages to show;
+    private $skip= ' ... '; // value for page breakdown
     
-    function __construct($itemsList, $page, $size, $pagesNumber) {
+    /*
+     * @param Array $itemList full array of items
+     * @param int $page current page to output
+     * @param int $size maxmum number of items per page
+     * @param int $pagesNumber expected pagination size
+     */
+    public function __construct($itemsList, $page, $size, $pagesNumber) {
         $this->itemsList= $itemsList;
         $this->page= $page;
         $this->size= $size;
@@ -20,13 +49,16 @@ class Pagination {
         
         $this->CalculatePages();
         $this->setPagesList();
+        $this->sliceList();
     }
-    function CalculatePages (){
+    //@todo calculate pages for he list
+    private function CalculatePages (){
         $this->count= count($this->itemsList);
         $pages= ceil($this->count/$this->size);
         $this->pages= $pages;
     }
-    function setPagesList() {
+    //@todo pages generating
+    private function setPagesList() {
         $list= array();
         if ($this->pages>$this->pagesNumber) {
             $list= $this->setList();
@@ -37,7 +69,9 @@ class Pagination {
         }
         $this->pagesList= $list;
     }
-    function setList() {
+    //@todo generate list for more pages than page number
+    //@return pages list
+    private function setList() {
         $list= array();
         $middle= ($this->pagesNumber-1)/2;
         $upper= ceil($middle);
@@ -59,7 +93,9 @@ class Pagination {
         }
         return $list;
     }
-    function center($upper, $lower) {
+    //@todo generate page list for center pages
+    //@return pages list
+    private function center($upper, $lower) {
         $list= array();
         $i= $this->page-($lower-2);
         $list[]= 1;
@@ -79,16 +115,26 @@ class Pagination {
         $list[]= $this->pages;
         return $list;
     }
-    //return total number of pages 
-    function getPages() {
+    //@todo page list generation
+    private function sliceList() {
+        $start= ($this->page-1)*$this->size;
+        $newList = array_splice($this->itemsList, $start, 20);
+        $this->pageItemsList= $newList;
+    }
+    //@todo set skip text to custom
+    public function setSkip($skip) {
+        $this->skip= $skip;
+    }
+    //@return total number of pages 
+    public function getPages() {
         return $this->pages;
     }
-    // return the pages list to be displayed
-    function getPagesList() {
+    //@return the pages list to be displayed
+    public function getPagesList() {
         return $this->pagesList;
     }
-    // return list items for the gien page
-    function getPageItemsList() {
+    //@return list items for the gien page
+    public function getPageItemsList() {
         return $this->pageItemsList;
     }
 }
